@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4c6b8">
+<title>生日特别企划</title>
+<style>
+:root{--ink:#423a38;--pink:#e9a99e;--rose:#c98283;--cream:#fff8ec;--yellow:#f5d98e;--sage:#b8c9bd;--lav:#c9bfdc}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background-color:#f8eee1;background-image:radial-gradient(#d8bda8 1px,transparent 1px);background-size:18px 18px}
+.wrap{width:min(900px,100%);margin:auto;padding:24px 16px 56px}
+.hero{position:relative;text-align:center;padding:34px 18px 28px;border:2px dashed #b98e80;border-radius:24px;background:rgba(255,248,236,.92);box-shadow:7px 7px 0 #e8c6b4}
+.kicker{font-size:12px;letter-spacing:4px;color:#9d7770;font-weight:700}
+h1{font-size:clamp(32px,7vw,56px);letter-spacing:3px;margin:12px 0 8px;font-weight:900}
+.subtitle{margin:0 auto;max-width:520px;line-height:1.8;color:#776560}
+.cake{font-size:40px;margin:8px}
+.spark{position:absolute;font-size:26px}.s1{left:7%;top:20px}.s2{right:8%;top:36px}.s3{right:13%;bottom:14px}
+.progressbox{margin:26px 0 18px;display:flex;align-items:center;gap:12px;color:#806d65;font-size:13px}
+.track{height:9px;border-radius:20px;background:#eadbd0;overflow:hidden;flex:1}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#e7a49a,#d6a9c8,#9cb8ac);transition:width .25s}
+.card{position:relative;margin:16px 0;padding:22px;border-radius:20px;background:rgba(255,250,242,.96);border:1px solid #e4cfc0;box-shadow:0 5px 0 rgba(186,143,124,.16)}
+.cardhead{display:flex;gap:12px;align-items:flex-start}
+.num{flex:0 0 42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:900;font-size:19px;background:var(--yellow)}
+.n2 .num{background:var(--pink)}.n3 .num{background:var(--sage)}.n4 .num{background:var(--lav)}
+.pts{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:#f3e3c4;color:#8a6a2f;vertical-align:middle}
+.pts.got{background:#cfe3d0;color:#3f6b48}
+h2{font-size:18px;line-height:1.65;margin:2px 0 6px}
+.hint{font-size:13px;color:#8c7770;line-height:1.7;margin:0 0 16px}
+textarea,input[type=text]{width:100%;border:1.5px solid #ddc7b9;border-radius:14px;padding:14px;background:#fffdf8;color:var(--ink);font:inherit;line-height:1.8;outline:none}
+textarea{min-height:150px;resize:vertical}
+textarea:focus,input:focus{border-color:#c98283;box-shadow:0 0 0 3px #f5dfd9}
+button,.filelabel{border:0;border-radius:999px;padding:11px 17px;font:inherit;font-weight:700;cursor:pointer;background:#e7aaa0;color:#493b38;transition:transform .15s}
+button:hover,.filelabel:hover{transform:translateY(-1px)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.secondary{background:#e9dfd4}.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}
+.status{font-size:13px;color:#8b6b63}
+.recording{background:#c45d64!important;color:white!important;animation:pulse 1s infinite alternate}
+@keyframes pulse{to{opacity:.65}}
+audio{width:100%;margin-top:12px}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.filelabel{display:inline-flex;align-items:center;gap:7px;background:#d6e2d7}
+.previewgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:14px}
+.preview{min-height:100px;border:1.5px dashed #d6bdb0;border-radius:14px;background:#fffdf8;padding:10px;text-align:center;font-size:12px;color:#8c7770}
+.preview img{max-width:100%;max-height:220px;object-fit:contain;border-radius:9px;display:block;margin:0 auto 8px}
+.tiny{font-size:12px;color:#9a8178;margin-top:10px;line-height:1.7}
+.nick{border:2px dashed #b98e80;background:rgba(255,248,236,.95)}
+.submitbox{text-align:center;padding:26px 18px;border-radius:22px;background:#dce6dc;border:2px dashed #a8b9aa}
+.submitbox h2{font-size:23px}
+.score{font-size:42px;font-weight:900;margin:6px 0}
+#msg{margin-top:14px;line-height:1.8;font-size:14px;white-space:pre-wrap}
+#msg.err{color:#b23b44}
+.done{display:none;margin-top:18px;padding:18px;background:#fffaf1;border-radius:14px;line-height:1.9}
+footer{text-align:center;font-size:12px;color:#a18b80;padding:24px 0 0}
+@media(max-width:520px){.wrap{padding:14px 11px 35px}.card{padding:17px}.hero{padding:28px 14px}.spark{font-size:20px}.cardhead{gap:10px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="hero">
+  <span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">♡</span>
+  <div class="kicker">A LITTLE BIRTHDAY MISSION</div>
+  <div class="cake">🎂</div>
+  <h1>生日特别企划</h1>
+  <p class="subtitle">新的一岁，认真祝福自己，也认真收藏今天。<br>请完成下面四个小任务，每个任务 25 分，满分 100 分！</p>
+</header>
+
+<section class="card nick">
+  <h2>先写下你的昵称 ✍️</h2>
+  <p class="hint">昵称会随答案一起提交，方便后台对应是谁。</p>
+  <input type="text" id="nickname" maxlength="30" placeholder="你的昵称（必填）" autocomplete="nickname">
+</section>
+
+<div class="progressbox"><span id="progressText">已完成 0 / 4 个任务 · 0 分</span><div class="track"><div class="bar" id="progressBar"></div></div></div>
+
+<section class="card n1">
+  <div class="cardhead"><div class="num">01</div><div><h2>记得对自己说一声生日快乐🍰，并向过去一年的自己说，辛苦了！<span class="pts" id="p1">25 分</span></h2><p class="hint">🎙️ 录一段语音吧。可以是祝福、感谢，也可以只是轻轻地对自己说几句话。</p></div></div>
+  <div class="controls"><button id="recordBtn" type="button">● 开始录音</button><button id="stopBtn" class="secondary" type="button" disabled>■ 结束录音</button><span class="status" id="recordStatus">还没有录音</span></div>
+  <audio id="audioPlayback" controls hidden></audio>
+  <p class="tiny">需要允许麦克风权限。点击提交前请不要刷新页面，否则录音会丢失。</p>
+</section>
+
+<section class="card n2">
+  <div class="cardhead"><div class="num">02</div><div><h2>请背诵民法第1015条✏️<span class="pts" id="p2">25 分</span></h2><p class="hint">📝 不看资料，试着默写下来。写完可以对照法条检查一遍。</p></div></div>
+  <textarea id="lawText" placeholder="在这里默写《民法典》第1015条……"></textarea>
+  <p class="tiny">小提示：法条内容以《中华人民共和国民法典》正式文本为准。</p>
+</section>
+
+<section class="card n3">
+  <div class="cardhead"><div class="num">03</div><div><h2>中午吃饭点一碗长寿面🍜，许下一个小心愿 ^_^<span class="pts" id="p3">25 分</span></h2><p class="hint">📸 拍下今天的长寿面，也可以在下面写下那个只属于你的小心愿。</p></div></div>
+  <label class="filelabel" for="noodlePhoto">📷 选择长寿面照片</label><input id="noodlePhoto" type="file" accept="image/*">
+  <div class="previewgrid"><div class="preview" id="noodlePreview">🍜<br>照片会显示在这里</div></div>
+  <textarea id="wishText" style="min-height:88px;margin-top:14px" maxlength="2000" placeholder="我的生日小心愿是……（选填）"></textarea>
+</section>
+
+<section class="card n4">
+  <div class="cardhead"><div class="num">04</div><div><h2>记录一下今天的天空，向它比个耶，记得再拍张和又老一岁的自己合影 ๑&gt;ᴗO๑<span class="pts" id="p4">25 分</span></h2><p class="hint">☁️ 把今天的天空和今天的自己一起收藏起来。两张照片都上传，才算完成这个小任务！</p></div></div>
+  <div class="controls"><label class="filelabel" for="skyPhoto">☁️ 上传天空照片</label><input id="skyPhoto" type="file" accept="image/*"><label class="filelabel" for="selfiePhoto">✌️ 上传生日合影</label><input id="selfiePhoto" type="file" accept="image/*"></div>
+  <div class="previewgrid"><div class="preview" id="skyPreview">☁️<br>今天的天空</div><div class="preview" id="selfiePreview">🎂<br>和新一岁的自己合影</div></div>
+</section>
+
+<section class="submitbox">
+  <h2>🎉 今天也要好好爱自己！</h2>
+  <div>当前积分</div>
+  <div class="score"><span id="scoreNow">0</span> / 100</div>
+  <button id="submitBtn" type="button">提交我的生日企划 ✨</button>
+  <div id="msg"></div>
+  <div class="done" id="done"></div>
+  <p class="tiny">提交后，你的昵称、文字、录音和照片会上传到活动主办方的私有数据库，仅管理员可见。最终得分以后台为准。</p>
+</section>
+<footer>Made with ♡ · 愿你新的一岁，平安、自由、闪闪发光。</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const CFG=window.APP_CONFIG||{};
+let sb=null;
+try{ if(CFG.SUPABASE_URL&&CFG.SUPABASE_URL.startsWith('https://')&&!CFG.SUPABASE_URL.includes('你的')) sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY); }catch(e){}
+
+let recorder=null,chunks=[],audioUrl=null,audioBlob=null;
+const photos={noodle:null,sky:null,selfie:null};
+let submitting=false;
+
+function state(){
+  return [!!audioBlob, $('lawText').value.trim().length>0, !!photos.noodle, !!(photos.sky&&photos.selfie)];
+}
+function updateProgress(){
+  const s=state(), n=s.filter(Boolean).length;
+  $('progressText').textContent=`已完成 ${n} / 4 个任务 · ${n*25} 分`;
+  $('progressBar').style.width=(n/4*100)+'%';
+  $('scoreNow').textContent=n*25;
+  s.forEach((ok,i)=>{const p=$('p'+(i+1));p.classList.toggle('got',ok);p.textContent=ok?'✓ 25 分':'25 分'});
+}
+
+/* ---------- 录音 ---------- */
+$('recordBtn').addEventListener('click',async()=>{
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){
+    $('recordStatus').textContent='当前浏览器不支持录音，请换 Safari / Chrome 或确认是 HTTPS 页面。';return;
+  }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks=[];recorder=new MediaRecorder(stream);
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    recorder.onstop=()=>{
+      const type=(recorder.mimeType||'audio/webm');
+      audioBlob=new Blob(chunks,{type});
+      if(audioUrl)URL.revokeObjectURL(audioUrl);
+      audioUrl=URL.createObjectURL(audioBlob);$('audioPlayback').src=audioUrl;$('audioPlayback').hidden=false;
+      stream.getTracks().forEach(t=>t.stop());
+      $('recordStatus').textContent='录音已完成，可以点击播放回听（想重录就再点开始录音）';
+      $('recordBtn').classList.remove('recording');$('recordBtn').textContent='● 重新录音';
+      $('recordBtn').disabled=false;$('stopBtn').disabled=true;updateProgress();
+    };
+    recorder.start();$('recordBtn').disabled=true;$('stopBtn').disabled=false;
+    $('recordBtn').classList.add('recording');$('recordStatus').textContent='正在录音……说完后点击“结束录音”';
+  }catch(err){$('recordStatus').textContent='无法访问麦克风，请在浏览器设置中允许权限后重试。'}
+});
+$('stopBtn').addEventListener('click',()=>{if(recorder&&recorder.state!=='inactive')recorder.stop()});
+
+/* ---------- 照片 ---------- */
+$('lawText').addEventListener('input',updateProgress);
+function bindPhoto(inputId,previewId,key,label){
+  $(inputId).addEventListener('change',()=>{
+    const file=$(inputId).files[0];if(!file||!file.type.startsWith('image/'))return;
+    photos[key]=file;
+    const box=$(previewId);box.innerHTML='';
+    const img=document.createElement('img');img.src=URL.createObjectURL(file);img.alt=label;box.appendChild(img);
+    const cap=document.createElement('div');cap.textContent=file.name;box.appendChild(cap);
+    updateProgress();
+  });
+}
+bindPhoto('noodlePhoto','noodlePreview','noodle','长寿面照片');
+bindPhoto('skyPhoto','skyPreview','sky','天空照片');
+bindPhoto('selfiePhoto','selfiePreview','selfie','生日合影');
+
+async function compress(file){
+  try{
+    const bmp=await createImageBitmap(file);
+    const s=Math.min(1,1600/Math.max(bmp.width,bmp.height));
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*s);c.height=Math.round(bmp.height*s);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));
+    return blob||file;
+  }catch(e){return file}
+}
+function audioExt(t){return t.includes('mp4')?'m4a':t.includes('ogg')?'ogg':t.includes('mpeg')?'mp3':'webm'}
+async function upload(path,blob){
+  const type=(blob.type||'application/octet-stream').split(';')[0];
+  const {error}=await sb.storage.from(CFG.BUCKET||'birthday').upload(path,blob,{contentType:type,upsert:false});
+  if(error)throw error;return path;
+}
+
+/* ---------- 提交 ---------- */
+function setMsg(t,err){$('msg').textContent=t;$('msg').className=err?'err':''}
+$('submitBtn').addEventListener('click',async()=>{
+  if(submitting)return;
+  const nick=$('nickname').value.trim();
+  if(!nick){setMsg('请先填写昵称～',true);$('nickname').focus();$('nickname').scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!sb){setMsg('页面还没有配置好数据库（config.js 里的网址或 Key 未填写）。',true);return}
+  const n=state().filter(Boolean).length;
+  if(n<4&&!confirm(`还有 ${4-n} 个任务没完成，现在提交只有 ${n*25} 分。确定提交吗？`))return;
+  submitting=true;$('submitBtn').disabled=true;setMsg('正在上传，请不要关闭页面……');
+  try{
+    const id=crypto.randomUUID();
+    const row={id,nickname:nick,law_text:$('lawText').value.trim()||null,wish_text:$('wishText').value.trim()||null};
+    if(audioBlob){setMsg('正在上传录音……');row.audio_path=await upload(`${id}/audio.${audioExt(audioBlob.type)}`,audioBlob)}
+    if(photos.noodle){setMsg('正在上传长寿面照片……');row.noodle_path=await upload(`${id}/noodle.jpg`,await compress(photos.noodle))}
+    if(photos.sky){setMsg('正在上传天空照片……');row.sky_path=await upload(`${id}/sky.jpg`,await compress(photos.sky))}
+    if(photos.selfie){setMsg('正在上传合影……');row.selfie_path=await upload(`${id}/selfie.jpg`,await compress(photos.selfie))}
+    setMsg('正在保存答案……');
+    const {error}=await sb.from('submissions').insert(row);
+    if(error)throw error;
+    setMsg('');
+    const d=$('done');d.style.display='block';
+    d.textContent=`🎉 提交成功！\n${nick}，你本次获得 ${n*25} / 100 分。\n生日快乐！谢谢过去一年的努力，也请继续温柔地照顾自己 ♡`;
+    d.style.whiteSpace='pre-wrap';
+    d.scrollIntoView({behavior:'smooth',block:'nearest'});
+    $('submitBtn').textContent='已提交 ✓';
+  }catch(e){
+    console.error(e);
+    setMsg('提交失败：'+(e.message||'网络错误')+'\n请检查网络后重试（已填内容还在页面上）。',true);
+    submitting=false;$('submitBtn').disabled=false;
+  }
+});
+updateProgress();
+</script>
+</body>
+</html>

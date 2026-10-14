@@ -27,3 +27,131 @@ audio{width:100%;margin:6px 0}
 .scores{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .scores label{font-size:12px;color:#7d6f68}
 .scores input{text-align:center}
+.err{color:#b23b44;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🎂 生日企划 · 管理后台</h1>
+
+<div class="box" id="loginBox">
+  <input id="email" type="email" placeholder="管理员邮箱" autocomplete="username">
+  <input id="pwd" type="password" placeholder="密码" autocomplete="current-password">
+  <button id="loginBtn">登录</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<div id="panel" style="display:none">
+  <div class="box top">
+    <span id="count" class="t"></span>
+    <select id="sort"><option value="time">按提交时间（新→旧）</option><option value="score">按总分（高→低）</option><option value="nick">按昵称</option></select>
+    <button class="s" id="refresh">刷新</button>
+    <button class="s" id="logout">退出</button>
+  </div>
+  <div id="list"></div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const CFG=window.APP_CONFIG||{};const B=CFG.BUCKET||'birthday';
+const sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);
+let rows=[],urls={};
+
+function el(tag,props={},kids=[]){const e=document.createElement(tag);Object.assign(e,props);kids.forEach(k=>e.append(k));return e}
+
+$('loginBtn').onclick=async()=>{
+  $('loginErr').textContent='';
+  const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('pwd').value});
+  if(error){$('loginErr').textContent='登录失败：'+error.message;return}
+  await enter();
+};
+$('logout').onclick=async()=>{await sb.auth.signOut();location.reload()};
+$('refresh').onclick=load;
+$('sort').onchange=render;
+
+async function enter(){
+  const {data}=await sb.rpc('is_admin');
+  if(data!==true){$('loginErr').textContent='该账号不是管理员（请检查 admins 表里的邮箱）。';await sb.auth.signOut();return}
+  $('loginBox').style.display='none';$('panel').style.display='block';await load();
+}
+(async()=>{const {data}=await sb.auth.getSession();if(data.session)enter()})();
+
+async function load(){
+  const {data,error}=await sb.from('submissions').select('*').order('created_at',{ascending:false});
+  if(error){alert('读取失败：'+error.message);return}
+  rows=data;urls={};
+  const paths=[];rows.forEach(r=>['audio_path','noodle_path','sky_path','selfie_path'].forEach(k=>r[k]&&paths.push(r[k])));
+  for(let i=0;i<paths.length;i+=100){
+    const {data:s}=await sb.storage.from(B).createSignedUrls(paths.slice(i,i+100),3600);
+    (s||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl});
+  }
+  render();
+}
+
+function render(){
+  const mode=$('sort').value;
+  const arr=[...rows];
+  if(mode==='score')arr.sort((a,b)=>b.total_score-a.total_score);
+  if(mode==='nick')arr.sort((a,b)=>a.nickname.localeCompare(b.nickname,'zh'));
+  $('count').textContent=`共 ${arr.length} 份提交`;
+  const list=$('list');list.innerHTML='';
+  arr.forEach(r=>list.append(card(r)));
+}
+
+function card(r){
+  const box=el('div',{className:'box'});
+  box.append(el('div',{className:'total',textContent:r.total_score+' / 100'}));
+  box.append(el('div',{className:'nick',textContent:r.nickname}));
+  box.append(el('div',{className:'t',textContent:new Date(r.created_at).toLocaleString('zh-CN')}));
+
+  if(r.audio_path&&urls[r.audio_path])box.append(el('audio',{controls:true,src:urls[r.audio_path]}));
+  else box.append(el('div',{className:'t',textContent:'（无录音）'}));
+
+  box.append(el('div',{className:'t',textContent:'默写民法第1015条：'}));
+  box.append(el('div',{className:'law',textContent:r.law_text||'（未填写）'}));
+  box.append(el('div',{className:'t',textContent:'生日小心愿：'}));
+  box.append(el('div',{className:'wish',textContent:r.wish_text||'（未填写）'}));
+
+  const imgs=el('div',{className:'imgs'});
+  [['noodle_path','长寿面'],['sky_path','天空'],['selfie_path','合影']].forEach(([k,label])=>{
+    const f=el('figure');
+    if(r[k]&&urls[r[k]]){const a=el('a',{href:urls[r[k]],target:'_blank'});a.append(el('img',{src:urls[r[k]],alt:label,loading:'lazy'}));f.append(a)}
+    else f.append(el('div',{className:'t',textContent:'（无）'}));
+    f.append(el('div',{textContent:label}));imgs.append(f);
+  });
+  box.append(imgs);
+
+  const names=[['score_audio','01 录音'],['score_law','02 法条'],['score_noodle','03 长寿面'],['score_sky','04 天空合影']];
+  const grid=el('div',{className:'scores'});const inputs={};
+  names.forEach(([k,l])=>{
+    const i=el('input',{type:'number',min:0,max:25,value:r[k],inputMode:'numeric'});inputs[k]=i;
+    grid.append(el('div',{},[el('label',{textContent:l+'（0–25）'}),i]));
+  });
+  box.append(grid);
+  const note=el('textarea',{placeholder:'管理员备注（选填）',value:r.admin_note||'',rows:2});
+  box.append(note);
+
+  const save=el('button',{textContent:'保存分数/备注'});
+  save.onclick=async()=>{
+    const upd={admin_note:note.value.trim()||null};
+    for(const [k] of names){const v=Math.max(0,Math.min(25,parseInt(inputs[k].value)||0));upd[k]=v}
+    const {error}=await sb.from('submissions').update(upd).eq('id',r.id);
+    if(error)alert('保存失败：'+error.message);else{await load()}
+  };
+  const del=el('button',{className:'d',textContent:'删除'});
+  del.onclick=async()=>{
+    if(!confirm(`确定删除「${r.nickname}」的提交及其文件吗？不可恢复。`))return;
+    const ps=['audio_path','noodle_path','sky_path','selfie_path'].map(k=>r[k]).filter(Boolean);
+    if(ps.length){const {error:e1}=await sb.storage.from(B).remove(ps);if(e1){alert('删除文件失败：'+e1.message);return}}
+    const {error}=await sb.from('submissions').delete().eq('id',r.id);
+    if(error)alert('删除失败：'+error.message);else load();
+  };
+  box.append(save,del);
+  return box;
+}
+</script>
+</body>
+</html>
