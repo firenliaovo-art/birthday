@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4c6b8">
+<title>生日特别企划</title>
+<style>
+:root{--ink:#423a38;--pink:#e9a99e;--rose:#c98283;--cream:#fff8ec;--yellow:#f5d98e;--sage:#b8c9bd;--lav:#c9bfdc}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background-color:#f8eee1;background-image:radial-gradient(#d8bda8 1px,transparent 1px);background-size:18px 18px}
+.wrap{width:min(900px,100%);margin:auto;padding:24px 16px 56px}
+.hero{position:relative;text-align:center;padding:34px 18px 28px;border:2px dashed #b98e80;border-radius:24px;background:rgba(255,248,236,.92);box-shadow:7px 7px 0 #e8c6b4}
+.kicker{font-size:12px;letter-spacing:4px;color:#9d7770;font-weight:700}
+h1{font-size:clamp(32px,7vw,56px);letter-spacing:3px;margin:12px 0 8px;font-weight:900}
+.subtitle{margin:0 auto;max-width:520px;line-height:1.8;color:#776560}
+.cake{font-size:40px;margin:8px}
+.spark{position:absolute;font-size:26px}.s1{left:7%;top:20px}.s2{right:8%;top:36px}.s3{right:13%;bottom:14px}
+.progressbox{margin:26px 0 18px;display:flex;align-items:center;gap:12px;color:#806d65;font-size:13px}
+.track{height:9px;border-radius:20px;background:#eadbd0;overflow:hidden;flex:1}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#e7a49a,#d6a9c8,#9cb8ac);transition:width .25s}
+.card{position:relative;margin:16px 0;padding:22px;border-radius:20px;background:rgba(255,250,242,.96);border:1px solid #e4cfc0;box-shadow:0 5px 0 rgba(186,143,124,.16)}
+.cardhead{display:flex;gap:12px;align-items:flex-start}
+.num{flex:0 0 42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:900;font-size:19px;background:var(--yellow)}
+.n2 .num{background:var(--pink)}.n3 .num{background:var(--sage)}.n4 .num{background:var(--lav)}
+.pts{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:#f3e3c4;color:#8a6a2f;vertical-align:middle}
+.pts.got{background:#cfe3d0;color:#3f6b48}
+h2{font-size:18px;line-height:1.65;margin:2px 0 6px}
+.hint{font-size:13px;color:#8c7770;line-height:1.7;margin:0 0 16px}
